@@ -1,0 +1,52 @@
+
+<!doctype html>
+<html>
+  <head>
+    <title>Controller</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #3498db;
+            font: 13px Helvetica, Arial; 
+        }
+
+        #slider-container {
+            padding: 25px;
+        }
+        input[type=range][orient=vertical]
+        {
+            writing-mode: bt-lr; /* IE */
+            -webkit-appearance: slider-vertical; /* WebKit */
+            width: 8px;
+            height: 275px;
+            padding: 20px 25px;
+        }
+    </style>
+    <script src="./js/socket.io-client.js"></script>
+    <script>
+        var socket = io('http://localhost:3000');
+
+        window.onload = function() {
+            inputs = document.getElementsByTagName('input');
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener('click', function(e) {
+                    console.log(e, this);
+                    var id = this.getAttribute('data-id');
+                    socket.emit('/client/update', id, this.value);
+                });
+            }
+        };
+
+    </script>
+  </head>
+  <body>
+    <div id=slider-container>
+        <input data-id="1" type="range" orient="vertical" />
+        <input data-id="2" type="range" orient="vertical" />
+        <input data-id="3" type="range" orient="vertical" />
+        <input data-id="4" type="range" orient="vertical" />
+        <input data-id="5" type="range" orient="vertical" />
+
+    </div>
+  </body>
+</html>

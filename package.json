@@ -1,0 +1,16 @@
+{
+  "name": "technopolis-esp32-server",
+  "version": "1.0.0",
+  "description": "Technopolis receiver and game for esp32",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joni De Borger",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "osc": "^2.4.0",
+    "socket.io": "^2.3.0"
+  }
+}

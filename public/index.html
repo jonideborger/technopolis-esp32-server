@@ -1,0 +1,127 @@
+
+<!doctype html>
+<html>
+  <head>
+
+    <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+    </style>
+    <title>Game</title>
+    <script src="./js/p5.min.js"></script>
+    <script src="./js/socket.io-client.js"></script>
+    <script>
+
+        var HOST = 'http://localhost';
+        var PORT = 3000;
+
+        var socket = io(`${HOST}:${PORT}`);
+
+        socket.on('/game/update', function(id, value) {
+            console.log('received value update', id, value);
+            updateDevice(id, value);
+        });
+
+        var W, H;
+        var LEVEL = 5;
+        var LEVEL_MARGIN = 15;
+        var LEVEL_STROKE_WIDTH = 2;
+
+        var DEVICE_STROKE_WIDTH = 5;
+
+        //array with Y pos devices
+        var DEVICES = [10, 20, 10, 10, 10];
+        var DEVICE_WIDTH_PERCENTAGE = 75;
+        var DEVICES_COLORS = [['f3', '68', 'e0'], ['ff', '9f', '43'], ['ee', '52', '53'], ['10', 'ac', '84'], ['5f', '27', 'cd'], ['fe', 'ca', '57']];
+
+        var WIN = false;
+        //frames for win screen
+        var WIN_TIME = 300;
+        var WIN_TIME_LEFT = 0;
+
+        let FONT;
+
+        function preload() {
+            FONT = loadFont('./assets/Lacquer-Regular.ttf');
+        }
+
+        function setup() {
+            W = windowWidth;
+            H = windowHeight;
+            createCanvas(W, H);
+        }
+
+        function draw() {
+            if(!WIN) {
+                background(0);
+                checkDevicesWin();
+                drawDevices();
+                drawBorders();
+            } else {
+                showWin();
+                WIN_TIME_LEFT --;
+                if (WIN_TIME_LEFT <= 0) {
+                    WIN = false
+                }
+            }
+        }
+
+        function checkDevicesWin() {
+            var win = true;
+            var margin = LEVEL * LEVEL_MARGIN;
+
+            for(var i = 0; i < DEVICES.length; i++) {
+                let yPos = DEVICES[i];
+                if(yPos < (H/2 - margin) || yPos > (H/2 + margin)) {
+                    win = false
+                }
+                console.log(`Index ${i}, win ${win}`);
+            }
+
+            WIN = win;
+            WIN_TIME_LEFT = WIN_TIME;
+        }
+
+        function drawBorders() {
+            stroke(255);
+            strokeWeight(LEVEL_STROKE_WIDTH)
+            var margin = LEVEL * LEVEL_MARGIN;
+            line(0, H/2 - margin , W, H/2 - margin);
+            line(0, H/2 + margin , W, H/2 + margin);
+        }
+
+        function drawDevices() {
+            //console.log(DEVICES);
+            var length = W / DEVICES.length;
+            strokeWeight(DEVICE_STROKE_WIDTH)
+            for(var i = 0; i < DEVICES.length; i++) {
+                stroke(unhex(DEVICES_COLORS[i]));
+                line(i*length + length/2 - length/200*DEVICE_WIDTH_PERCENTAGE, DEVICES[i], i*length + length/2 + length/200*DEVICE_WIDTH_PERCENTAGE, DEVICES[i]);
+            }
+        }
+
+        function showWin() {
+            background(unhex(['1d', 'd1', 'a1']));
+            textFont(FONT);
+            textSize(width / 3);
+            textAlign(CENTER, CENTER);
+            fill(255);
+            text('WIN', W/2, H/3);
+        }
+
+        function updateDevice(id, value) {
+            console.log('update device', id, value);
+            if(id <= DEVICES.length) {
+                //remap
+                var mappedValue = map(value, 0, 100, H, 0);
+                //set
+                DEVICES[id-1] = mappedValue;
+            }
+        }
+
+    </script>
+  </head>
+  <body>
+    <div id=canvas>
+    </div>
+  </body>
+</html>
