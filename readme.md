@@ -26,3 +26,12 @@ first time, or after pull: run npm install
 afterwards run npm start
 
 *npm start*
+
+##OSC config
+For broadcasting through OSC you can use the following adress
+
+* 255.255.255.255 *
+
+The server is listening to PORT
+
+*1234*

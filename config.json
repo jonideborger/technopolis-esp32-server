@@ -1,0 +1,21 @@
+{
+    "identifiers": {
+        "anoo": 1,
+        "clara": 2,
+        "ruben": 3,
+        "Fleur": 4,
+        "Aiken": 5
+    },
+    "osc": {
+        "listenAddress": "127.0.0.1",
+        "listenPort": 1236,
+        "remoteAddress": "127.0.0.1",
+        "sendPort": 1237
+    },
+    "serial": {
+        "address": "/dev/cu.usbmodem1432302",
+        "baudrate": 115200
+    },
+    "serverPort": 8080,
+    "socketPort": 3001
+}

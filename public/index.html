@@ -12,7 +12,7 @@
     <script>
 
         var HOST = 'http://localhost';
-        var PORT = 3000;
+        var PORT = 3001;
 
         var socket = io(`${HOST}:${PORT}`);
 
@@ -22,7 +22,7 @@
         });
 
         var W, H;
-        var LEVEL = 5;
+        var LEVEL = 1;
         var LEVEL_MARGIN = 15;
         var LEVEL_STROKE_WIDTH = 2;
 
@@ -30,6 +30,7 @@
 
         //array with Y pos devices
         var DEVICES = [10, 20, 10, 10, 10];
+        var DEVICES_DESTINATION = [10, 10, 10, 10, 10];
         var DEVICE_WIDTH_PERCENTAGE = 75;
         var DEVICES_COLORS = [['f3', '68', 'e0'], ['ff', '9f', '43'], ['ee', '52', '53'], ['10', 'ac', '84'], ['5f', '27', 'cd'], ['fe', 'ca', '57']];
 
@@ -74,11 +75,15 @@
                 if(yPos < (H/2 - margin) || yPos > (H/2 + margin)) {
                     win = false
                 }
-                console.log(`Index ${i}, win ${win}`);
+                //console.log(`Index ${i}, win ${win}`);
             }
 
             WIN = win;
             WIN_TIME_LEFT = WIN_TIME;
+            if(WIN && LEVEL > 0) {
+                LEVEL--;
+                console.log("LEVEL:", LEVEL)
+            }
         }
 
         function drawBorders() {
@@ -94,6 +99,15 @@
             var length = W / DEVICES.length;
             strokeWeight(DEVICE_STROKE_WIDTH)
             for(var i = 0; i < DEVICES.length; i++) {
+                //animate to destination if necessary
+                if(DEVICES[i] < DEVICES_DESTINATION[i]) {
+                    var diff = DEVICES_DESTINATION[i] - DEVICES[i];
+                    DEVICES[i] = DEVICES[i] + Math.floor(diff/5);
+                } else if (DEVICES[i] > DEVICES_DESTINATION[i]){
+                    var diff = DEVICES[i] - DEVICES_DESTINATION[i] ;
+                    DEVICES[i] = DEVICES[i] - Math.floor(diff/5)
+                }
+                //draw
                 stroke(unhex(DEVICES_COLORS[i]));
                 line(i*length + length/2 - length/200*DEVICE_WIDTH_PERCENTAGE, DEVICES[i], i*length + length/2 + length/200*DEVICE_WIDTH_PERCENTAGE, DEVICES[i]);
             }
@@ -112,9 +126,9 @@
             console.log('update device', id, value);
             if(id <= DEVICES.length) {
                 //remap
-                var mappedValue = map(value, 0, 100, H, 0);
+                var mappedValue = map(value, 0, 255, 0, H);
                 //set
-                DEVICES[id-1] = mappedValue;
+                DEVICES_DESTINATION[id-1] = mappedValue;
             }
         }
 
